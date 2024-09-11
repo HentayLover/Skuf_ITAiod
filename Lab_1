@@ -1,0 +1,145 @@
+data = read.table(file = "D:/Temp/SuperHeroes.csv", header = TRUE,sep = ";", quote = "")
+
+str(data)
+for (var_name in variable.names(data)) {
+  data[[var_name]][ data[[var_name]] == "unknown" ] <- NA
+}
+# Количество всех переменных
+var_count = length(variable.names(data)) 
+# Преобразование всех строковых переменных в факторы
+# Кроме первой переменной Name [2:var_count]
+for (var_name in variable.names(data)[2:var_count]) {
+  if(class(data[[var_name]]) == "character") 
+    data[[var_name]] <- as.factor(data[[var_name]])
+}
+# Вывод на экран
+str(data)
+
+summary(data)
+
+hist(data$Heigh, xlab= "Рост, см", ylab = "Частота", main = "")
+hist(data$Heigh[data$Heigh<=400], xlab= "Рост, см (<= 400)", ylab = "Частота", main = "")
+
+hist(data$Weight, xlab= "Вес, кг", ylab = "Частота", main = "")
+hist(log(data$Weight), xlab= "ln(Вес)", ylab = "Частота", main = "") 
+
+
+#Нахождение корреляции проверка гипотез
+cor.test(data$Height, data$Weight, use = "pairwise.complete.obs") 
+#Чем меньше p-value тем больше вероятность что верна альтернативная гипотеза
+#Если p-value>0.1 То верна гипотеза о том что коэфицент корреляци равен нулю(вроде бы)
+cor.test(data$Height[data$Heigh<=400], data$Weight[data$Heigh<=400], use = "pairwise.complete.obs")
+
+
+#Регрессионный анализ
+#Чем ближе кофицент детерминации к еденице тем адекватнее модель
+fit <- lm(Weight ~ Height, data = data); 
+summary(fit)
+
+
+xin <- seq(0, 1000, length=100)
+pre <- predict(fit, data.frame(Height=xin), interval="confidence")
+plot(data$Height, data$Weight, xlab= "Рост, см", ylab = "Вес, кг")
+matplot(xin, pre, type="l", lty=c(1,2,2), add=TRUE)
+
+data1 = data.frame(Weight = data$Weight[data$Height<=400], 
+                   Height = data$Height[data$Height<=400])
+fit <- lm(log(Weight) ~ Height, data = data1); 
+summary(fit)
+
+
+xin <- seq(0, 400, length=100)
+pre <- predict(fit, data.frame(Height=xin), interval="confidence")
+plot(data1$Height, log(data1$Weight), xlab= "Рост, см", ylab = "ln(Вес)")
+matplot(xin, pre, type="l", lty=c(1,2,2), add=TRUE)
+
+#Дисперсионный анализ
+fit = aov(Height ~ Alignment, data = data)
+summary(fit)
+
+boxplot(Height ~ Alignment, data = data, ylim = c(0,400),
+        xlab= "Принадлежность группе", ylab = "Рост, см")
+
+
+
+#Выполнение лабораторной работы
+
+data=read.csv(file = "unpopular_songs.csv", header = TRUE,sep = ",")
+head(data)
+
+# Первичный анализ
+summary(data)
+str(data)
+data$popularity <- as.factor(data$popularity)
+data$track_name <- as.factor(data$track_name)
+data$mode <- as.factor(data$mode)
+
+
+hist(data$danceabilit, xlab= "Танцевальность", ylab = "Частота", main = "")
+hist(data$energy , xlab= "Энергичность", ylab = "Частота", main = "")
+hist(data$key, xlab= "key", ylab = "Частота", main = "")
+hist(data$loudness, xlab= "Громкость", ylab = "Частота", main = "")
+hist(data$mode, xlab= "Режим", ylab = "Частота", main = "")
+hist(data$speechiness, xlab= "Речистость", ylab = "Частота", main = "")
+hist(data$acousticness, xlab= "Акустичность", ylab = "Частота", main = "")
+hist(data$instrumentalness, xlab= "Инструментальность", ylab = "Частота", main = "")
+hist(data$liveness, xlab= "Живость", ylab = "Частота", main = "")
+hist(data$valence, xlab= "Валентность(позитивность)", ylab = "Частота", main = "")
+hist(data$tempo, xlab= "Темп", ylab = "Частота", main = "")
+hist(data$duration_ms, xlab= "Продолжительность", ylab = "Частота", main = "")
+hist(data$popularity, xlab= "Популярность", ylab = "Частота", main = "")
+
+#Корреляционный анализ
+
+#Корреляция танцевальности и энергичности
+cor.test(data$danceability,data$energy)
+#p-value <0.001 Значит нулевая гипотеза отвергается
+plot(data$danceability,data$energy)
+
+#Корреляция энергичности и инструментальности
+cor.test(data$energy,data$instrumentalness)
+#p-value <0.001 Значит нулевая гипотеза отвергаеся
+plot(data$energy,data$instrumentalness)
+
+#Корреляция продолжительности и темпа
+cor.test(data$duration_ms,data$tempo)
+#p-value >0.001 Нулевая гипотеза принимается
+plot(data$duration_ms,data$tempo)
+
+#Корреляция позитивности и танцевальности
+cor.test(data$valence,data$danceability)
+#p-value <0.001 Нулевая гипотеза отвергается
+plot(data$valence,data$tempo)
+
+
+#Регрессионный анализ
+fit<-lm(data$instrumentalness~data$energy)
+summary(fit)
+plot(data$instrumentalness,data$energy)
+
+xin <- seq(0, 1, length=100)
+yin<-seq(0,0,length=100)
+for (i in 1:100){
+  yin[i]<-fit$coefficients[1] +xin[i]* fit$coefficients[2]
+}
+plot(data$instrumentalness,data$energy,xlab = "Инструментальнось",ylab = "Энергичность")
+matplot(xin, yin, type="l", lty=c(1,2,2), add=TRUE)
+
+
+
+fit<-lm(data$danceability~data$energy)
+summary(fit)
+plot(data$danceability,data$energy)
+
+xin <- seq(0, 1, length=100)
+yin<-seq(0,0,length=100)
+for (i in 1:100){
+  yin[i]<-fit$coefficients[1] +xin[i]* fit$coefficients[2]
+}
+plot(data$danceability,data$energy,xlab = "Танцевальонсть",ylab = "Энергичность")
+matplot(xin, yin, type="l", lty=c(1,2,2), add=TRUE)
+
+
+
+
+
