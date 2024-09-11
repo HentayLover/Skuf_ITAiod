@@ -119,7 +119,28 @@ cat("Строки:",str_array,"\n")
 cat("Количество пробелов:",col_space,"\n")
 
 #1.3.30
-
+arr<-c(1,2,3,4,5,6,7,8,9,10)
+pr_chet<-1
+kol_chet<-0
+sum_nechet<-0
+kol_neschet<-0
+for(i in 1:length(arr)){
+  if(arr[i]==55555){
+    break
+  }
+  if(i%%2==0){
+    print(arr[i])
+    pr_chet<-pr_chet*arr[i]
+    kol_chet<-kol_chet+1
+  }else{
+    sum_nechet<-sum_nechet+arr[i]
+    kol_neschet<-kol_neschet+1
+  }
+}
+pr_chet
+kol_chet
+sum_nechet
+kol_neschet
 
 
 
