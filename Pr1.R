@@ -60,11 +60,16 @@ f_ot_a<-function(a){
   if(a<=0){
     result<-0
   }else{
-    result<-NAN
+   if(a<=1){
+     result<-a^2-a
+   }
+  }
+  if(a>1){
+    result<-a^2-sin(0.25*a^2)
   }
   print(result)
 }
-f_ot_a(-5)
+f_ot_a(2)
 
 #1.3.2
 
@@ -142,6 +147,43 @@ kol_chet
 sum_nechet
 kol_neschet
 
+#1.3.33
+
+array<-c(1,5,2,123,56,0,1234,67,99999)
+sum<-0
+for(i in 1:length(array)){
+  sum<-sum+array[i]
+  if(array[i]==0){
+    cat(sum)
+  }
+  if(array[i]==99999){
+    cat("Введено 99999 - работа остановлена")
+    break
+  }
+}
+
+#1.3.35
+
+array<-c(1,-5,2,123,-56,0,1234,67,65432,99999)
+pol<-0
+otr<-0
+schet<-0
+for(i in 1:length(array)){
+  if(array[i]==65432){
+    cat("Работа завершена")
+    break
+  }
+  if(array[i]>=0){
+    pol<-pol+1
+  }else{
+    otr<-otr+1
+  }
+  schet<-schet+1
+}
+pol<-pol/schet*100
+otr<-otr/schet*100
+pol
+otr
 
 
 
